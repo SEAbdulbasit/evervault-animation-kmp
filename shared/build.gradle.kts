@@ -7,9 +7,10 @@ plugins {
 
 kotlin {
     android()
-
     jvm("desktop")
-
+    wasm {
+        browser()
+    }
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -24,7 +25,8 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
+        extraSpecAttributes["resources"] =
+            "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
     }
 
     sourceSets {
@@ -53,12 +55,22 @@ kotlin {
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
         }
+        val nonAndroidMain by creating {
+            dependsOn(commonMain)
+        }
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.common)
             }
         }
+        val wasmMain by getting {
+            dependsOn(nonAndroidMain)
+        }
     }
+}
+
+compose.experimental {
+    web.application {}
 }
 
 android {
@@ -80,4 +92,7 @@ android {
     kotlin {
         jvmToolchain(11)
     }
+}
+dependencies {
+    implementation("androidx.core:core:1.10.1")
 }
