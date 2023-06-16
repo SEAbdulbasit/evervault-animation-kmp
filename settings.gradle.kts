@@ -1,4 +1,4 @@
-rootProject.name = "MyApplication"
+rootProject.name = "EverVaultAnimation"
 
 include(":androidApp")
 include(":shared")
